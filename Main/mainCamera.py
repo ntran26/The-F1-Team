@@ -119,7 +119,7 @@ def postprocess(frame, outs):
                 file.close()
 
 # Import ROI coordinates from "crop"
-f = open("crop","r")
+f = open("../Camera Calibration/crop","r")
 roi = f.read().split("\n")
 x1 = int(roi[0])
 y1 = int(roi[1])
