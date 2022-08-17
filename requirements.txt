@@ -1,0 +1,8 @@
+imutils==0.5.4
+keyboard==0.13.5
+numpy==1.21.2
+Nut==0.2.0
+opencv_python_headless==4.5.4.60
+pypylon==1.7.4
+pyserial==3.5
+scipy==1.7.1
