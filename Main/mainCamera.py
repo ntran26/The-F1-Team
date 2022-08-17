@@ -119,7 +119,7 @@ def postprocess(frame, outs):
                 file.close()
 
 # Import ROI coordinates from "crop"
-f = open("../Camera Calibration/crop","r")
+f = open("../calibration/crop","r")
 roi = f.read().split("\n")
 x1 = int(roi[0])
 y1 = int(roi[1])
@@ -166,15 +166,6 @@ while camera.IsGrabbing():
         
         trigger_point = frameWidth*4//5
 
-        # # Stop the program if reached end of video
-        # if not hasFrame:
-        #     print("Done processing !!!")
-        #     # print("Output file is stored as ", outputFile)
-        #     cv2.waitKey(3000)
-        #     # Release device
-        #     cap.release()
-        #     break
-
         # Create a 4D blob from a frame.
         blob = cv2.dnn.blobFromImage(frame, 1/255, (inpWidth, inpHeight), [0,0,0], 1, crop=False)
 
@@ -199,6 +190,7 @@ while camera.IsGrabbing():
         # vid_writer.write(frame.astype(np.uint8))    
         trigger_line = cv2.line(frame, (trigger_point, 0),(trigger_point, frameHeight), (0, 0, 255), 2)
 
+        fps = int(camera.ResultingFrameRateAbs.GetValue())   
         cv2.imshow('video', imutils.resize(frame, height=600))
 
         key = cv2.waitKey(1)
