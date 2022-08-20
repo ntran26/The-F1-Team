@@ -3,3 +3,4 @@ calibration/crop
 calibration/static_frame_from_video.jpg
 Main/__pycache__/centroid_tracker.cpython-38.pyc
 Main/junk
+myvenv
