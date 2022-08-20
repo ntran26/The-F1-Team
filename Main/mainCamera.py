@@ -41,7 +41,10 @@ trackers = []
 trackableObjects = {}
 
 layer_names = net.getLayerNames()
-output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
+if (np.ndim(net.getUnconnectedOutLayers()) > 1):
+    output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+else:
+    output_layers = [layer_names[i - 1] for i in net.getUnconnectedOutLayers()]
 
 resultCoordination =[]
 # Remove the bounding boxes with low confidence using non-maxima suppression
@@ -132,8 +135,8 @@ camera = pylon.InstantCamera(pylon.TlFactory.GetInstance().CreateFirstDevice())
 
 # Set up the parameters
 camera.Open()
-# camera.ExposureTimeAbs.SetValue(300000)                         # for monochrome camera
-camera.ExposureOverlapTimeMaxRaw.SetValue(17375)              # for RGB camera
+camera.ExposureTimeAbs.SetValue(300000)                         # for monochrome camera
+# camera.ExposureOverlapTimeMaxRaw.SetValue(17375)              # for RGB camera
 # camera.Width.SetValue(3840)
 # camera.Height.SetValue(2748)
 camera.AcquisitionFrameRateEnable.SetValue(True)
