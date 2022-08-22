@@ -2,6 +2,7 @@ import cv2
 import wx
 import wx.lib.agw.shapedbutton as shapedbutton
 import mainCamera
+import threading
 
 
 class AppWindow(wx.Frame):
@@ -310,17 +311,21 @@ class Stream(wx.Panel):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.mainCamera = mainCamera.MainCamera()
+        self.inferenceThread = threading.Thread(target=self.mainCamera.startCameraDetection, args=(False,), daemon=True)
+        self.inferenceThread.start()
 
         # Source
-        self.cap = cv2.VideoCapture(0)
-        hasFrame, frame = self.cap.read()
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frame = cv2.flip(frame, 1)
-        height = frame.shape[0]
-        width = frame.shape[1]
+        while not self.mainCamera.getHasFrame():
+            pass
+        self.frame = self.mainCamera.getFrame()
+        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+        self.frame = cv2.flip(self.frame, 1)
+        height = self.frame.shape[0]
+        width = self.frame.shape[1]
 
         self.bitmap = wx.Bitmap.FromBuffer(width, height,
-                                           frame)
+                                           self.frame)
         self.SetMaxSize(wx.Size(width, height))
         self.SetMinSize(wx.Size(width, height))
 
@@ -336,14 +341,11 @@ class Stream(wx.Panel):
         dc.DrawBitmap(self.bitmap, 0, 0)
 
     def next_frame(self, event):
-        hasFrame, frame = self.cap.read()
-        if hasFrame:
-            # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            # frame = cv2.flip(frame, 1)
-            import numpy as np
-            frame = np.zeros(1)
-            self.bitmap.CopyFromBuffer(frame)
-            self.Refresh()
+        self.frame = self.mainCamera.getFrame()
+        self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+        # self.frame = cv2.flip(self.frame, 1)
+        self.bitmap.CopyFromBuffer(self.frame)
+        self.Refresh()
 
 
 def main():
