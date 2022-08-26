@@ -311,6 +311,7 @@ class Stream(wx.Panel):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.SetDoubleBuffered(True)
         self.mainCamera = mainCamera.MainCamera()
         self.inferenceThread = threading.Thread(target=self.mainCamera.startCameraDetection, args=(False,), daemon=True)
         self.inferenceThread.start()
