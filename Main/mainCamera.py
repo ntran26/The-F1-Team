@@ -15,8 +15,8 @@ class MainCamera:
         self.inpHeight = 416      #Height of network's input image
 
         # real coordinate height and width in mm
-        self.real_height = 300   # 30cm  (belt's height)
-        self.real_width = 210    # 210cm (A4 paper width)
+        self.real_height = 297   # 30cm  (belt's height)
+        self.real_width = 211    # 210cm (A4 paper width)
 
         # parser = argparse.ArgumentParser(description='Object Detection using YOLO in OPENCV')
 
@@ -123,8 +123,8 @@ class MainCamera:
             cX = int((x1+x2)/2)         # centroid x of the rectangle box
             cY = int((y1+y2)/2)         # centroid y of the rectangle box
 
-            cX2 = -(cX*pixel_width)+702
-            cY2 = -(cY*pixel_height)+126
+            cX2 = -(cX*pixel_width)+700-15
+            cY2 = -(cY*pixel_height)+144
 
             new_cX2 = cY2
             new_cY2 = cX2

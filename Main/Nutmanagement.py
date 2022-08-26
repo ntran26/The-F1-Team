@@ -279,7 +279,7 @@ class Nutmanagement:
 
 
     def wait(self, coor_X):
-        string = f"G01 X{coor_X} Z-757"
+        string = f"G01 X{coor_X} Z-750"
         gcode_byte = bytes(string, 'utf-8')
         self.serialcomm.write(gcode_byte + b'\r\n') #send Gcode move to object position
         # self.serialcomm.write(b'M03 D0' + b'\r\n')
@@ -296,8 +296,8 @@ class Nutmanagement:
         #self.serialcomm.write(f"G01 X{self.target_X}".encode() + b'\r\n')
         self.serialcomm.write(f"G01 X{self.target_X} Y{self.target_Y - offset-5.375-2}".encode() + b'\r\n') #5.24-v50
         #self.pickY =self.target_Y - offset-5.375-2
-        self.serialcomm.write(b'G01 Z-793' + b'\r\n')
-        self.serialcomm.write(b'G01 Z-757' + b'\r\n') #move to drop off position
+        self.serialcomm.write(b'G01 Z-779' + b'\r\n')
+        self.serialcomm.write(b'G01 Z-750' + b'\r\n') #move to drop off position
         self.serialcomm.write(b'G01 X250 Y0' + b'\r\n')
         self.serialcomm.write(b'M05 D0' + b'\r\n')   #turn off vacuum
         startT = time.time()
@@ -310,7 +310,7 @@ class Nutmanagement:
     def home(self, v, a, j, S, E):
         self.serialcomm.write(b'G28' + b'\r\n')
         self.serialcomm.write(f"M210 F{v} A{a} J{j} S{S} E{E}".encode() + b'\r\n')
-        self.serialcomm.write(b'G01 X250 Y0 Z-757' + b'\r\n')
+        self.serialcomm.write(b'G01 X250 Y0 Z-750' + b'\r\n')
     
     def offset(self,S,E,amax, vmax,j,vbelt):
         # pre
