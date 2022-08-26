@@ -104,9 +104,9 @@ class AppWindow(wx.Frame):
     def speed_settings_bar(self):
         self.speed_settings_bar_panel = wx.Panel(self)
 
-        velocity = self.create_speed_bar_group(self.speed_settings_bar_panel, "velocity")
-        accelerate = self.create_speed_bar_group(self.speed_settings_bar_panel,"acceleration")
-        convey = self.create_speed_bar_group(self.speed_settings_bar_panel,"v_convey")
+        velocity = self.create_speed_bar_group(self.speed_settings_bar_panel, "velocity", "700")
+        accelerate = self.create_speed_bar_group(self.speed_settings_bar_panel,"acceleration", "10000")
+        convey = self.create_speed_bar_group(self.speed_settings_bar_panel,"v_convey", "15")
         button = wx.Button(self.speed_settings_bar_panel, label="Input")
 
         grid = wx.GridSizer(rows=1, cols=4, vgap=0, hgap=0)
@@ -150,10 +150,11 @@ class AppWindow(wx.Frame):
             self.manual_bottom_bar_panel.Show()
             return self.manual_bottom_bar_panel
 
-    def create_speed_bar_group(self, panel, title):
+    def create_speed_bar_group(self, panel, title, value):
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         text = wx.StaticText(panel, label=title.capitalize() + ":")
         input = wx.TextCtrl(panel)
+        input.SetLabelText(value)
         hbox.Add(text, flag=wx.ALIGN_CENTER)
         hbox.Add(input, flag=wx.LEFT | wx.ALIGN_CENTER, border=5)
         return hbox
