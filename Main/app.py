@@ -192,7 +192,8 @@ class AppWindow(wx.Frame):
         temp.Hide()
         button_height = temp.GetSize()[1]
 
-        stream = Stream(panel)
+        maxHeight = int(self.maximized_size[1]/8*4)
+        stream = Stream(panel, maxHeight)
         sizer.Add(stream, flag=wx.BOTTOM, border=button_height)
         return sizer
 
@@ -309,7 +310,7 @@ class AppWindow(wx.Frame):
 class Stream(wx.Panel):
     FPS = 10
 
-    def __init__(self, parent):
+    def __init__(self, parent, maxHeight):
         super().__init__(parent)
         self.SetDoubleBuffered(True)
         self.mainCamera = mainCamera.MainCamera()
@@ -321,7 +322,13 @@ class Stream(wx.Panel):
             pass
         self.frame = self.mainCamera.getFrame()
         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
-        self.frame = cv2.flip(self.frame, 1)
+        # self.frame = cv2.flip(self.frame, 1)
+
+        self.maxHeight = maxHeight
+        self.percentage = self.maxHeight / self.frame.shape[0]
+        self.maxWidth = int(self.frame.shape[1] * self.percentage)
+
+        self.frame = cv2.resize(self.frame, (self.maxWidth, self.maxHeight), interpolation = cv2.INTER_AREA)
         height = self.frame.shape[0]
         width = self.frame.shape[1]
 
@@ -338,12 +345,16 @@ class Stream(wx.Panel):
         self.Bind(wx.EVT_TIMER, self.next_frame)
 
     def on_paint(self, event):
-        dc = wx.BufferedPaintDC(self)
-        dc.DrawBitmap(self.bitmap, 0, 0)
+        self.dc = wx.BufferedPaintDC(self)
+        self.dc.DrawBitmap(self.bitmap, 0, 0)
 
     def next_frame(self, event):
         self.frame = self.mainCamera.getFrame()
         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
+
+        self.percentage = self.maxHeight / self.frame.shape[0]
+        self.maxWidth = int(self.frame.shape[1] * self.percentage)
+        self.frame = cv2.resize(self.frame, (self.maxWidth, self.maxHeight), interpolation = cv2.INTER_AREA)
         # self.frame = cv2.flip(self.frame, 1)
         self.bitmap.CopyFromBuffer(self.frame)
         self.Refresh()
