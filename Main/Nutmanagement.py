@@ -10,7 +10,7 @@ from Nut import Nut
 import datetime
 import cmath
 import os
-
+from pathlib import Path
 #from PickPlace.Test3 import readcor
 
 def checkDeleted(objectID):
@@ -39,6 +39,10 @@ class Nutmanagement:
         self.pickY = 0.0
         self.t_begin = 0.0
         self.listnut = []
+        self.Vconveyor = 0.0
+        self.ENdis = 0.0
+        self.serial_encoder = serial.Serial('COM10', 115200)
+        self.serial_encoder.timeout = None
     serialcomm = serial.Serial('COM3',115200)   #robot
     serialcomm.timeout =1
     serialcomm1 = serial.Serial('COM7',115200)  #conveyor
@@ -91,6 +95,24 @@ class Nutmanagement:
         new_y = x + 750.0
         return new_x, new_y
 
+    def Update_Conveyor_Pos(self,v):
+        #clear input buffer
+        self.serial_encoder.flushInput()
+        self.serialcomm1.write(b'M310 1' + b'\r\n')
+        self.serialcomm1.write(f"M311 -{v}".encode() + b'\r\n')
+
+        while True:
+            line = self.serial_encoder.readline().decode('ascii')
+            self.ENdis = float(line)
+            self.update_var(self.ENdis)
+
+    def speed_monitor(self):
+        while True:
+            if keyboard.is_pressed('S') == True:
+                break
+            self.Vconveyor = self.ENdis/0.2
+
+    '''
     def clk(self,v):
         self.serialcomm1.write(b'M310 1' + b'\r\n')
         self.serialcomm1.write(f"M311 {-v}".encode() + b'\r\n')
@@ -103,14 +125,17 @@ class Nutmanagement:
             
         #self.serialcomm1.write(b'M311 0' + b'\r\n')
         #self.update_var(v*( time.time()- prev))        
-            
+    '''
+
     def update_var(self,displace_val):
             for k in range (0, len(self.listnut)):
-                self.listnut[k]._corY = self.listnut[k]._corY - displace_val
+                self.listnut[k]._corY = self.listnut[k]._corY + displace_val
             if self.i < len(self.listnut):
-                id = self.idarray[self.i]
-                self.target_X = round(self.listnut[id-1]._corX,2)
-                self.target_Y = round(self.listnut[id-1]._corY,2)
+                #id = self.idarray[self.i]
+                #self.target_X = round(self.listnut[id-1]._corX,2)
+                #self.target_Y = round(self.listnut[id-1]._corY,2)
+                self.target_X = round(self.listnut[self.i]._corX,2)
+                self.target_Y = round(self.listnut[self.i]._corY,2)
                 # if self.prevX != self.target_X and self.target_Y > 340 and self.i >0:
                 #     self.flag = True
                 # self.prevX = self.target_X 
@@ -185,8 +210,10 @@ class Nutmanagement:
                 a = time.time()        
     
             files = os.listdir("./coordinate/")
+            paths = sorted(Path("./coordinate/").iterdir(),key=os.path.getmtime)
+            paths = list(map(lambda p: str(p),list(paths)))
             if(len(files) > 0):
-                f = open("./coordinate/"+files[0],'r')
+                f = open(paths[0],'r')
                 # f = open("./coordinate/demofile.txt", "r")
                 t = f.read().split(" ")
                 f.close()
@@ -265,12 +292,12 @@ class Nutmanagement:
         while time.time() - t_prev < self.tw: #(cashew.tw): #1 while t_curent - t_prev < t_required 
             continue
         '''
-        offset= self.offset(S,E,a_arm,v_arm, j,v_belt)
+        offset= self.offset(S,E,a_arm,v_arm, j,math.fabs(v_belt))
         #self.serialcomm.write(f"G01 X{self.target_X}".encode() + b'\r\n')
         self.serialcomm.write(f"G01 X{self.target_X} Y{self.target_Y - offset-5.375-2}".encode() + b'\r\n') #5.24-v50
         #self.pickY =self.target_Y - offset-5.375-2
-        self.serialcomm.write(b'G01 Z-720' + b'\r\n')
-        self.serialcomm.write(b'G01 Z-680' + b'\r\n') #move to drop off position
+        self.serialcomm.write(b'G01 Z-793' + b'\r\n')
+        self.serialcomm.write(b'G01 Z-757' + b'\r\n') #move to drop off position
         self.serialcomm.write(b'G01 X250 Y0' + b'\r\n')
         self.serialcomm.write(b'M05 D0' + b'\r\n')   #turn off vacuum
         startT = time.time()
@@ -283,7 +310,7 @@ class Nutmanagement:
     def home(self, v, a, j, S, E):
         self.serialcomm.write(b'G28' + b'\r\n')
         self.serialcomm.write(f"M210 F{v} A{a} J{j} S{S} E{E}".encode() + b'\r\n')
-        self.serialcomm.write(b'G01 X250 Y0 Z-680' + b'\r\n')
+        self.serialcomm.write(b'G01 X250 Y0 Z-757' + b'\r\n')
     
     def offset(self,S,E,amax, vmax,j,vbelt):
         # pre
@@ -336,8 +363,8 @@ class Nutmanagement:
         #print(t7+self.tw)
         #print(x1,x2,x3,x4,x5,x6)
         if self.i < len(self.listnut) - 1:
-            id = self.idarray[self.i+1]
-            self.pickY = round(self.listnut[id-1]._corY,2)
+            #id = self.idarray[self.i+1]
+            self.pickY = round(self.listnut[self.i+1]._corY,2)
         return ofset
 
     def t_wait(self, X_o,x7_final,S,E,amax, vmax,j):

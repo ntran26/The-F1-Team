@@ -144,8 +144,8 @@ class MainCamera:
 
         # Set up the parameters
         camera.Open()
-        camera.ExposureTimeAbs.SetValue(300000)                         # for monochrome camera
-        # camera.ExposureOverlapTimeMaxRaw.SetValue(17375)              # for RGB camera
+        # camera.ExposureTimeAbs.SetValue(300000)                         # for monochrome camera
+        camera.ExposureOverlapTimeMaxRaw.SetValue(17375)              # for RGB camera
         # camera.Width.SetValue(3840)
         # camera.Height.SetValue(2748)
         camera.AcquisitionFrameRateEnable.SetValue(True)
