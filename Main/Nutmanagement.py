@@ -41,11 +41,11 @@ class Nutmanagement:
         self.listnut = []
         self.Vconveyor = 0.0
         self.ENdis = 0.0
-        self.serial_encoder = serial.Serial('COM10', 115200)
+        self.serial_encoder = serial.Serial('COM8', 115200)
         self.serial_encoder.timeout = None
-    serialcomm = serial.Serial('COM3',115200)   #robot
+    serialcomm = serial.Serial('COM5',115200)   #robot
     serialcomm.timeout =1
-    serialcomm1 = serial.Serial('COM7',115200)  #conveyor
+    serialcomm1 = serial.Serial('COM9',115200)  #conveyor
     serialcomm1.timeout=1
 
     def generateID(self):

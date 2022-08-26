@@ -7,7 +7,7 @@ import math
 import keyboard 
 import sys
 
-serialcomm = serial.Serial('COM3',115200) #conveyor
+serialcomm = serial.Serial('COM9',115200) #conveyor
 serialcomm.timeout =1
 #f = open('Coor.text','r')
 

@@ -30,18 +30,19 @@ cashew.home(v_arm,a_arm, j,s,e)
 #cashew.check()
 #cashew.readcor()
 time.sleep(15) #12.3s
-t =  Thread(target= cashew.clk, args=[v_belt])
+t =  Thread(target= cashew.speed_monitor)
 t0 = Thread(target= cashew.readcor)
 #t1 = Thread(target= cashew.convey)  ##Update every 0.2s 15.19
-t2 = Thread(target= cashew.pick_order) 
+#t2 = Thread(target= cashew.pick_order) 
 t3 = Thread(target= cashew.kills)
+t4 = Thread(target=cashew.Update_Conveyor_Pos, args=[v_belt])
 
-
+t4.start()
 t.start()
 t0.start()
 #t1.start()
 t3.start()
-t2.start()
+#t2.start()
 a = time.perf_counter()
 t_prev = 0
 t_wait = 0
@@ -62,7 +63,7 @@ while True:
                     print(cashew.target_X, cashew.target_Y)
                     # cashew.wait(cashew.target_X)
                     if cashew.incircle(cashew.target_X, cashew.target_Y,300) == True:
-                        cashew.pnp2(s,e,a_arm,v_arm,j, v_belt)
+                        cashew.pnp2(s,e,a_arm,v_arm,j, cashew.Vconveyor)
                         print("Completeted: ",cashew.i+1)
                         #cashew.t_required(s,e,a_arm,v_arm,j)
                         cashew.i = cashew.i + 1
@@ -84,6 +85,7 @@ while True:
 t.join()
 t0.join()
 #t1.join()
-t2.join()
+#t2.join()
 t3.join()
+t4.join()
 
