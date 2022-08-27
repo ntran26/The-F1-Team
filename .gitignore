@@ -5,3 +5,4 @@ Main/__pycache__/centroid_tracker.cpython-38.pyc
 Main/junk
 myvenv
 __pycache__
+Main/coordinate/*
