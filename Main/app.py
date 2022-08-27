@@ -153,7 +153,7 @@ class AppWindow(wx.Frame):
     def create_speed_bar_group(self, panel, title, value):
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         text = wx.StaticText(panel, label=title.capitalize() + ":")
-        input = wx.TextCtrl(panel)
+        input = wx.TextCtrl(panel, style=wx.TE_CENTER, )
         input.SetLabelText(value)
         hbox.Add(text, flag=wx.ALIGN_CENTER)
         hbox.Add(input, flag=wx.LEFT | wx.ALIGN_CENTER, border=5)
